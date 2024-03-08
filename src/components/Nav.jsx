@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { headerLogo } from '../assets/images'
-import { hamburger } from '../assets/icons'
+import { hamburger, close } from '../assets/icons'
 import { navLinks } from '../constants'
 const Nav = () => {
-    const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
-    const toggleNavMenu = () => setIsNavMenuOpen((prevState) => !prevState);
+    const [active, setActive] = useState("");
+    const [toggle, setToggle] = useState(false);
 
     return (
         <header className='padding-x py-8 absolute z-10 w-full'>
@@ -29,28 +29,34 @@ const Nav = () => {
                         </li>
                     ))}
                 </ul>
-                <div className='hidden max-lg:block' onClick={toggleNavMenu}>
+                <div className='hidden max-lg:block justify-end items-center'>
                     <img
-                        src={hamburger}
-                        alt='Hamburger'
+                        src={toggle ? close : hamburger}
+                        alt='menu'
                         width={25}
                         height={25}
+                        onClick={() => setToggle(!toggle)}
                     />
-                </div>
-                {isNavMenuOpen && <div>
-                    <ul>
-                        {navLinks.map((item) => (
-                            <li key={item.label}>
-                                <a
-                                    href={item.href}
-                                    className='font-montserrat leading-normal text-lg text-slate-gray'
+                    <div
+                        className={`${!toggle ? "hidden" : "flex"
+                            } p-6 bg-red-400 absolute top-20 right-0 mx-2 my-2 min-w-[140px] rounded-xl`}
+                    >
+                        <ul className='list-none flex justify-end items-start flex-1 flex-col gap-4'>
+                            {navLinks.map((nav) => (
+                                <li key={nav.label}
+                                    className={`font-montserrat font-medium cursor-pointer text-[16px] ${active === nav.label ? "text-slate-gray" : "text-white"
+                                        }`}
+                                    onClick={() => {
+                                        setToggle(!toggle);
+                                        setActive(nav.label);
+                                    }}
                                 >
-                                    {item.label}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>}
+                                    <a href={nav.href}>{nav.label}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
             </nav>
         </header>
     )
